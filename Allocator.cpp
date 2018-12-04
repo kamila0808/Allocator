@@ -1,99 +1,129 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <memory.h>
+#include <iostream>
+#include <vector>
+#include "alloc001.h"
 
-struct mem_handle_t {
-	int addr;
-	int size;
+using namespace std;
 
-	mem_handle_t(int addr, int size) :
-		addr(addr),
-		size(size)
-		;
 
-		bool operator==(const mem_handle_t& other) { return other.addr == addr && other.size == size; }
-	bool operator!=(const mem_handle_t& other) { return !operator==(other); }
-};
+int mem_size; // общий размер памяти
+bool mem; // признак созданиея
 
-typedef struct
-{
-	int (*create)(int size);
-	int (*destroy)();
-	int (*alloc)(int size);
-	int (*free)(mem_handle_t head);
-	int (*realloc)(int size);
-	int (*defrag)(mem_handle_t head);
+vector <int> block, addr;
 
-	mem_handle_t (*alloc)(int block_size);
 
-} memory_manager_t;
+int create(int size,mem_handle_t h){
+if (mem == 1 || size < 1) return 1;
 
-void setup_memory_manager(memory_manager_t* mm);
-
-#endif
-
-int (*create)(int size);
-{
-	m_head = nullptr;
-	m_size = 0;
+mem_size = size;
+mem = 1;
+h = nullptr;
+return 0;
 }
 
-int (*alloc)(int size)
+//************************************************
+
+int destroy(mem_handle_t h){
+
+if (mem == 0) return 1;
+Node *Next;
+
+if(*h != HULL)
 {
-	template<typename T, class alloc = std::allocator<T>>
-	class try_list
-	{
-	public:
-		try_list()
-		{
-			m_head = nullptr;
-			m_size = 0;
-		}
+Next *h;
+do
+{
+Next = Delete(Next);
+} while(Next != NULL);
+*h=NULL;
+}
+mem = 0;
+return 0;
+}
 
-		void push_back(T data)
-		{
-			if (m_head == nullptr)
-			{
-				m_head = m_allocator.allocate(sizeof(Node<T>));
-				*m_head = data;
-			}
-			else
-			{
-				Node<T> *current = this->m_head;
-				while (current->pNext != nullptr)
-				{
-					current = current->pNext;
-				}
-				current->pNext = m_allocator.allocate(sizeof(Node<T>));
-			}
-			m_size++;
-		}
+//************************************************
 
-	private:
-		template<typename U>
-		class Node
-		{
-		public:
-			Node *pNext;
-			U data;
+mem_handle_t alloc(int block_size){
 
-			Node(U data = U(), Node *pNext = nullptr)
-			{
-				this->data = data;
-				this->pNext = pNext;
-			}
-		};
-		int m_size;
-		Node<T> *m_head;
-		using node_alloc = typename alloc::template rebind<T>::other;
-		node_alloc m_allocator;
-	};
+Node Newnode;
 
-};
+NewNode=New(NewNode);
+
+if (NewNode!=Null)
+{
+NewNode->data=data;
+NewNode->Next=(*Node)->Next;
+(*Node)->Next=NewNode;
+}
+
+// mem_handle_t ans(0,0);
+// if (mem == 0 || block_size == 0) return ans;
 
 
+// if (block_size + full > mem_size) return ans;
 
+// full += block_size;
 
+// int index = ((int)block.size()) - 1;
 
+// block.push_back(block_size);
+// if (addr.size() == 0) addr.push_back(0);
+// else addr.push_back(block[index] + addr[index]);
+// index ++;
 
+// ans.addr = addr[addr.size()-1];
+// ans.size = block[block.size()-1];
+
+// return ans;
+
+}
+
+//************************************************
+
+int free(mem_handle_t h){
+
+// if (mem == 0 || addr.empty()) return 1;/
+
+// addr.pop_back();
+// full -= block[block.size() - 1];
+// block.pop_back();
+
+return 0;
+}
+
+int realloc(mem_handle_t h, int size)
+{
+
+Node node;
+
+for (node=h;node=NULL;node=node->next);
+
+if (NewNode!=Null)
+{
+for (i=0;i<size;i++) {
+NewNode=New(NewNode);
+NewNode->data=data;
+NewNode->Next=(*Node)->Next;
+(*Node)->Next=NewNode;
+}
+}
+
+int defrag(mem_handle_t head)
+{
+
+}
+;
+
+ 
+
+//************************************************
+
+void setup_memory_manager(memory_manager_t* mm) {
+mm->create = create;
+mm->destroy = destroy;
+mm->alloc = alloc;
+mm->free = free;
+mm->get_max_block_size = get_max_block_size;
+mm->get_free_space = get_free_space;
+mm->print_blocks = print_blocks;
+}
