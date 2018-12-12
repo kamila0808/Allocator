@@ -10,8 +10,8 @@ bool mem; // признак создания
 
 vector <int> block, addr;
 
-// создание менеджера памяти
-int create(int size, mem_handle_t h)
+//////////////////////// создание менеджера памяти//////////////////
+int Allocator::create(int size)
 {
 	if (mem == 1 || size < 1) return 1;  // неудача
 
@@ -20,106 +20,116 @@ int create(int size, mem_handle_t h)
 	h = nullptr;
 	return 0;
 }
-// удаление менеджера памяти
-int destroy(mem_handle_t h)
+/////////////////////////////////////////////////////////
+
+//////////////////////// удаление менеджера памяти///////////////////
+int Allocator::destroy()
 {
 	if (mem == 0) return 1;
-	Node *Next;
+	Node *next;
 
 	if (*h != NULL)
 	{
-		Next *h;
+		next *h;
 		do
 		{
-			Next = Delete(Next);
-		} while (Next != NULL);
+			next = Delete(next);
+		} while (next != NULL);
 		*h = NULL;
 	}
 	mem = 0;
 	return 0;
 }
+/////////////////////////////////////////////////////////
 
-mem_handle_t alloc(int block_size) {
+/////////////////////////////////////////////////////////
+CleverPtr* Allocator::alloc(int size) {
 
-	//CleverPtr ClevPtr;
 	Node NewNode;
 	NewNode = New(NewNode);
-
 	if (NewNode != Null)
 	{
 		NewNode->data = data;
-		NewNode->Next = (*Node)->Next;
-		(*Node)->Next = NewNode;
+		NewNode->next = (*Node)->next;
+		(*Node)->next = NewNode;
 	}
-}
 
-int free(mem_handle_t h)
+	CleverPtr result = CleverPtr::CleverPtr(NewNode);
+	return &result;
+}
+/////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////
+// void Allocator::free(CleaverPtr *h)
+// {
+// 	struct MemoryManager *h;
+// 	h = data - sizeof(struct MemoryManager);
+// 	if (h == first)
+// 	{
+// 		first = h.next;
+// 	}
+// 	else {while (first = next) first = h.next;}
+// 	return 0;
+// }
+/////////////////////////////////////////////////////////
+
+
+int Allocator::sort(Node *start)
+//параметр - указатель на начало списка.
 {
-	struct mem_handle_t *h;
-	h = data - sizeof(struct mem_handle_t);
-	if (h == head)
-	{
-		head = h.Next;
-	}
-	else {while (head = Next) head = h.Next;}
+	Node *node;
+// указатель для внешнего цыкла for
+	Node *n_node;
+// для внутреннего
+	for (node = start->next; node != NULL; node = node->next)
+//пробегаемся по всех узлах списка
+		for (n_node = start->next; n_node->next != NULL; n_node = n_node->next)
+//а здесь только до узла, next которого указывает на NULL
+//обычный обмен значениями
+			if (n_node->count > n_node->next->count) {
+				int tmp;
+				tmp = n_node->data; //
+				n_node->data = n_node->next->data;
+				n_node->next->data = tmp;
+			}
 	return 0;
 }
 
-int realloc(mem_handle_t h, int size)
+void Allocator::defrag()
 {
-	Node node;
-
-	for (node = h; node = NULL; node = node->next);
-
-	if (NewNode != Null)
-	{
-		for (i = 0; i < size; i++) {
-			NewNode = New(NewNode);
-			NewNode->data = data;
-			NewNode->Next = (*Node)->Next;
-			(*Node)->Next = NewNode;
+	Node *node;
+	Node *adr, *adr1;
+	adr = h;
+	for (node = h->next; node != NULL; node = node->next) {
+		adr1 = node;
+		if (adr1 - adr != sizeof(Node)) {
+			h->next = h;
+			h = NULL;
 		}
 	}
-///////////////////////////////////////////////////////
-	int defrag(mem_handle_t head) { }
+	return 0;
+}
 
-	CleverPtr::CleverPtr(void* data)
-	{
-		this.data = data;
-	}
-	int CleverPtr::get(void* data)
-	{
-		if (  )
-		{
-			return freq++;
-		}
-	}
-///////////////////////////////////////////////////////
-	// int get_max_block_size()
-	// {
-	// 	if (!created) {	return 0; }
-	// 	if (mem_size - block_size < 0) { return 0; }
-	// 	return block_size;
-	// }
+/////////////////////////////////////////////////////////
+void Allocator::realloc(CleaverPtr *h, int size)
+{
+	Node *node;
+	for (node = h->next; node != NULL; node = node->next) {}
 
-	//int get_free_space(){	}
+	h = node;
+	Node *tmp = (Node*) malloc(sizeof(Node));
 
-	void print_blocks()
-	{
-		for (int i = 0; i < h.size(); i++) {
-			cout << h[i].addr << " " << h[i].size << endl;
-		}
-	}
+	tmp->data = data;
+	tmp->next = h;
+	tmp->count = 0;
+	h = tmp;
+	return 0;
+}
+/////////////////////////////////////////////////////////
 
-	void setup_memory_manager(memory_manager_t* mm)
-	{
-		mm->create = create;
-		mm->destroy = destroy;
-		mm->alloc = alloc;
-		mm->free = free;
-		mm->defrag = defrag;
-		mm->realloc = realloc;
-		mm->get_max_block_size = get_max_block_size;
-		mm->get_free_space = get_free_space;
-		mm->print_blocks = print_blocks;
-	}
+
+/////////////////////////////////////////////////////////
+int Allocator::get_block(int addr, int size) {}
+
+/////////////////////////////////////////////////////////
+

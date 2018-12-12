@@ -5,49 +5,76 @@
 
 class CleverPtr
 {
-	void* data;
+	Node* node;
+
 public:
-	CleverPtr();
-	void* get() const;
-	~CleverPtr();
+	CleaverPtr* next = NULL;
+	CleverPtr(Node* node) {
+		this->node = node;
+	}
+	void* get() const {
+		this->node->freq++;
+		return node->data;
+	}
+	CleaverPtr& operator=(const CleaverPtr& b) {
+		CleaverPtr& a = *this;
+		node = b.node;
+		if (b.next == NULL)
+			b.next = a;
+		else
+			for (auto* curr = a.next; curr->next != b; curr = curr->next)
+				curr->next = a;
+		a.next = b;
+		return *this;
+	}
 };
 
-struct mem_handle_t
+struct Node
 {
-	int addr, size;
-	mem_handle_t(int addr, int size) :
-		addr(addr),	
-		size(size);
-	}; // дескриптор блока памяти
-
-	typedef struct Node
-{
-	void* data;
-	struct Node * Next;
-	int addr;
-	int freq = 0;
 	int size;
-	int block_size;
-	int max_block_size;
-} Node;
+	void* data;
+	Node * next;
+	int addr;
+	int freq;
+	bool is_free;
+	bool isCreated;
 
-typedef struct
+	Node():
+		size(0),
+		addr(0),
+		next(nullptr),
+		is_free(false),
+		isCreated(false),
+		data(NULL){},
+	     freq(0)
+};
+
+class Allocator
 {
-	int (*create)(int size); // создание менеджера памяти
-	int (*destroy)();
+public:
+	Allocator(int size)
+	{
+		this->memories = malloc(size);
+		Node::Node *memories;
+		memories->data = nullptr;
+		memories->next = NULL;
+		memories->addr = NULL;
+		memories->freq = 0;
+		memories->size = size;
+	}
+	~Allocator()
+	{
+		free(this->memories);
+	}
 
-	mem_handle_t (*alloc)(int block_size);
-	int (*free)(mem_handle_t h);
-	int (*realloc)(mem_handle_t h, int size);
-	int (*defrag)(mem_handle_t head);
+public:
+	void* memories;
+	int create(int size); // создание менеджера памяти
+	int destroy();
+	CleaverPtr* alloc(int size);
+	void free(CleaverPtr *h);
+	void realloc(CleaverPtr *h, int size);
+	void defrag();
+	int get_block(int addr, int size);
+};
 
-	mem_handle_t (*get_block)(int addr, int size);  
-	int(*get_max_block_size)();
-	int(*get_free_space)();
-	void(*print_blocks)(); // распечатывает все выделенные блоки памяти в формате <аddr> <size>;
-
-} memory_manager_t;
-
-void setup_memory_manager(memory_manager_t* mm);
-
-#endif
