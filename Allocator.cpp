@@ -86,7 +86,7 @@ int Allocator::sort(Node *start)
 		for (n_node = start->next; n_node->next != NULL; n_node = n_node->next)
 //а здесь только до узла, next которого указывает на NULL
 //обычный обмен значениями
-			if (n_node->count > n_node->next->count) {
+			if (n_node->freq > n_node->next->freq) {
 				int tmp;
 				tmp = n_node->data; //
 				n_node->data = n_node->next->data;
@@ -121,7 +121,7 @@ void Allocator::realloc(CleaverPtr *h, int size)
 
 	tmp->data = data;
 	tmp->next = h;
-	tmp->count = 0;
+	tmp->freq = 0;
 	h = tmp;
 	return 0;
 }
